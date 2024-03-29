@@ -69,6 +69,7 @@ namespace MyReisinLapTimes
                 TopRace = Helper.OrderList(Cars, "Race") ?? new List<Car>();
                 TopTop = Helper.OrderList(Cars) ?? new List<Car>();
 
+                Helper.ReloadListViews(Cars, LstTopCar, LstTopStreet, LstTopRace);
                 Helper.ResetControls(TxtCar, TxtTime, RadRace, RadStreet, ImgCar);
                 Helper.Serialize(Cars);
             }
@@ -91,6 +92,7 @@ namespace MyReisinLapTimes
                 TopRace = Helper.OrderList(Cars, "Race") ?? new List<Car>();
                 TopTop = Helper.OrderList(Cars) ?? new List<Car>();
 
+                Helper.ReloadListViews(Cars, LstTopCar, LstTopStreet, LstTopRace);
                 Helper.Serialize(Cars);
 
                 TxtCar.Text = string.Empty;

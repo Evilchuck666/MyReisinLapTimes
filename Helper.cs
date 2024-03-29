@@ -1,5 +1,4 @@
-﻿using System.Drawing.Imaging;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace MyReisinLapTimes
 {
@@ -102,6 +101,20 @@ namespace MyReisinLapTimes
             if (ImgCar.Image == null)
             {
                 throw new Exception("Please upload an image before adding a car and its lap time.");
+            }
+        }
+
+        public static void ReloadListViews(List<Car> cars, ListView top, ListView street, ListView race)
+        {
+            top.Items.Clear();
+            street.Items.Clear();
+            race.Items.Clear();
+
+            if (cars.Count > 0)
+            {
+                Helper.LoadList(Helper.OrderList(cars), top, true);
+                Helper.LoadList(Helper.OrderList(cars, "Street"), street, true);
+                Helper.LoadList(Helper.OrderList(cars, "Race"), race, true);
             }
         }
     }
