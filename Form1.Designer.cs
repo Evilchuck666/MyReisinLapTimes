@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             BtnAddTime = new Button();
             GrpBxTimes = new GroupBox();
             BtnImageCar = new Button();
@@ -365,6 +366,7 @@
             Controls.Add(GrpAllCars);
             Controls.Add(GrpBxTimes);
             FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "FrmMain";
             SizeGripStyle = SizeGripStyle.Hide;
             StartPosition = FormStartPosition.CenterScreen;
