@@ -1,0 +1,168 @@
+name: Build Windows app
+
+# Disabled by default. Pushes and pull requests only build when the repository
+# variable MYREISIN_CI is set to "true" (Settings → Secrets and variables →
+# Actions → Variables); otherwise the run shows up as skipped and uses no
+# minutes. "Run workflow" always works: leave the version empty to just build,
+# or give one (e.g. 1.0.0) to also publish a GitHub release with the package.
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '**.cs'
+      - '**.resx'
+      - '*.csproj'
+      - '*.sln'
+      - '*.png'
+      - '*.ico'
+      - 'assets/**'
+      - '.github/workflows/build.yml'
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release, without the v (e.g. 1.0.0). Leave empty to only build.'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
+
+jobs:
+  windows:
+    name: Build (windows-x64)
+    if: github.event_name == 'workflow_dispatch' || vars.MYREISIN_CI == 'true'
+    runs-on: windows-2025
+    timeout-minutes: 20
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_NOLOGO: '1'
+      VERSION: ${{ inputs.version }}
+      APP_DIR: dist/MyReisinLapTimes
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Restore
+        run: dotnet restore MyReisinLapTimes.csproj -r win-x64
+
+      # Self-contained folder, not single-file: ImageBuilder finds its assets
+      # through Assembly.Location, which is empty inside a single-file bundle.
+      - name: Publish self-contained build
+        run: |
+          set -euo pipefail
+          version_args=()
+          if [[ -n "$VERSION" ]]; then
+            version_args=(-p:Version="$VERSION")
+          fi
+          dotnet publish MyReisinLapTimes.csproj \
+            -c Release -r win-x64 --self-contained true --no-restore \
+            "${version_args[@]}" -o "$APP_DIR"
+
+      - name: Add export assets
+        run: |
+          set -euo pipefail
+          mkdir -p "$APP_DIR/assets"
+          cp Top10.png Top10Street.png Top10Race.png "$APP_DIR/assets/"
+          if [[ -f assets/Racing.otf ]]; then
+            cp assets/Racing.otf "$APP_DIR/assets/"
+          else
+            echo "::warning::assets/Racing.otf is not in the repository. Image export will not work until the font is added next to the executable."
+          fi
+
+      - name: Verify package
+        run: |
+          set -euo pipefail
+          for file in MyReisinLapTimes.exe assets/Top10.png assets/Top10Street.png assets/Top10Race.png; do
+            if [[ ! -s "$APP_DIR/$file" ]]; then
+              echo "::error::$file is missing from the package."
+              exit 1
+            fi
+          done
+
+      - name: Create zip
+        shell: pwsh
+        run: Compress-Archive -Path dist/MyReisinLapTimes -DestinationPath dist/MyReisinLapTimes-windows-x64.zip
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: MyReisinLapTimes-windows-x64
+          path: dist/MyReisinLapTimes-windows-x64.zip
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    needs: windows
+    if: github.event_name == 'workflow_dispatch' && inputs.version != '' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    concurrency:
+      group: myreisinlaptimes-release
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      VERSION: ${{ inputs.version }}
+      RELEASE_SHA: ${{ github.sha }}
+      PACKAGES: MyReisinLapTimes-windows-x64.zip
+    steps:
+      - name: Validate version and check tag
+        run: |
+          set -euo pipefail
+
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Use a version like 1.0.0, without the v."
+            exit 1
+          fi
+
+          # An API failure must stop the release, so no "|| true" here.
+          gh api --paginate "repos/$GH_REPO/git/matching-refs/tags/" --jq '.[].ref' > tags.txt
+          if grep -Fxq "refs/tags/v$VERSION" tags.txt; then
+            echo "::error::Tag v$VERSION already exists. Use another version."
+            exit 1
+          fi
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: MyReisinLapTimes-*
+          path: release-assets
+          merge-multiple: true
+
+      - name: Check packages and generate checksums
+        working-directory: release-assets
+        run: |
+          set -euo pipefail
+          for file in $PACKAGES; do
+            if [[ ! -s "$file" ]]; then
+              echo "::error::Package $file is missing or empty."
+              exit 1
+            fi
+          done
+          sha256sum $PACKAGES > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Create tag and publish release
+        working-directory: release-assets
+        run: |
+          set -euo pipefail
+          gh release create "v$VERSION" $PACKAGES SHA256SUMS.txt \
+            --repo "$GH_REPO" \
+            --target "$RELEASE_SHA" \
+            --title "MyReisinLapTimes v$VERSION" \
+            --generate-notes \
+            --latest
