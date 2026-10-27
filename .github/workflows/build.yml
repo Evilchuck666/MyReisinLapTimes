@@ -54,7 +54,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '6.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Restore
         run: dotnet restore MyReisinLapTimes.csproj -r win-x64

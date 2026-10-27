@@ -53,7 +53,8 @@ assets/
 ├── Top10.png
 ├── Top10Street.png
 ├── Top10Race.png
-└── Racing.otf
+├── Racing.otf
+└── Racing-OFL.txt
 ```
 
 Every file in `assets/` is copied next to the executable when building, and
@@ -62,10 +63,14 @@ temporary folder on first run). `Racing.otf` is the font used for titles,
 names and times. If it is missing, export shows a warning instead of creating
 the image.
 
+`Racing.otf` is [Racing Sans One](https://fonts.google.com/specimen/Racing+Sans+One)
+by Pablo Impallari and Rodrigo Fuenzalida, licensed under the
+[SIL Open Font License 1.1](assets/Racing-OFL.txt).
+
 ## 🛠️ Building from source
 
-Requirements: Windows and the [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
-(or Visual Studio 2022 with the .NET desktop workload).
+Requirements: Windows and the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+(or Visual Studio 2026 with the .NET desktop workload).
 
 ```powershell
 git clone https://github.com/Evilchuck666/MyReisinLapTimes.git
