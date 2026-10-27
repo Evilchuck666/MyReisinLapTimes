@@ -4,7 +4,7 @@ name: Build Windows app
 # variable MYREISIN_CI is set to "true" (Settings → Secrets and variables →
 # Actions → Variables); otherwise the run shows up as skipped and uses no
 # minutes. "Run workflow" always works: leave the version empty to just build,
-# or give one (e.g. 1.0.0) to also publish a GitHub release with the package.
+# or give one (e.g. 1.0.0) to also publish a GitHub release with the .exe.
 
 on:
   push:
@@ -14,7 +14,6 @@ on:
       - '**.resx'
       - '*.csproj'
       - '*.sln'
-      - '*.png'
       - '*.ico'
       - 'assets/**'
       - '.github/workflows/build.yml'
@@ -44,7 +43,7 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: '1'
       DOTNET_NOLOGO: '1'
       VERSION: ${{ inputs.version }}
-      APP_DIR: dist/MyReisinLapTimes
+      EXE: MyReisinLapTimes-windows-x64.exe
     defaults:
       run:
         shell: bash
@@ -60,9 +59,16 @@ jobs:
       - name: Restore
         run: dotnet restore MyReisinLapTimes.csproj -r win-x64
 
-      # Self-contained folder, not single-file: ImageBuilder finds its assets
-      # through Assembly.Location, which is empty inside a single-file bundle.
-      - name: Publish self-contained build
+      - name: Check export font
+        run: |
+          if [[ ! -f assets/Racing.otf ]]; then
+            echo "::warning::assets/Racing.otf is not in the repository. Image export will not work until the font is added."
+          fi
+
+      # One self-contained .exe. IncludeAllContentForSelfExtract also bundles
+      # assets/, which is extracted on first run and found via
+      # AppContext.BaseDirectory.
+      - name: Publish single-file executable
         run: |
           set -euo pipefail
           version_args=()
@@ -70,38 +76,29 @@ jobs:
             version_args=(-p:Version="$VERSION")
           fi
           dotnet publish MyReisinLapTimes.csproj \
-            -c Release -r win-x64 --self-contained true --no-restore \
-            "${version_args[@]}" -o "$APP_DIR"
+            -c Release -r win-x64 --self-contained true \
+            -p:PublishSingleFile=true \
+            -p:IncludeAllContentForSelfExtract=true \
+            -p:EnableCompressionInSingleFile=true \
+            -p:DebugType=none \
+            "${version_args[@]}" -o dist/publish
+          cp dist/publish/MyReisinLapTimes.exe "dist/$EXE"
 
-      - name: Add export assets
+      - name: Verify executable
         run: |
           set -euo pipefail
-          mkdir -p "$APP_DIR/assets"
-          cp Top10.png Top10Street.png Top10Race.png "$APP_DIR/assets/"
-          if [[ -f assets/Racing.otf ]]; then
-            cp assets/Racing.otf "$APP_DIR/assets/"
-          else
-            echo "::warning::assets/Racing.otf is not in the repository. Image export will not work until the font is added next to the executable."
+          extra=$(find dist/publish -type f ! -name MyReisinLapTimes.exe)
+          if [[ -n "$extra" ]]; then
+            echo "::error::Single-file publish left extra files behind:"
+            echo "$extra"
+            exit 1
           fi
-
-      - name: Verify package
-        run: |
-          set -euo pipefail
-          for file in MyReisinLapTimes.exe assets/Top10.png assets/Top10Street.png assets/Top10Race.png; do
-            if [[ ! -s "$APP_DIR/$file" ]]; then
-              echo "::error::$file is missing from the package."
-              exit 1
-            fi
-          done
-
-      - name: Create zip
-        shell: pwsh
-        run: Compress-Archive -Path dist/MyReisinLapTimes -DestinationPath dist/MyReisinLapTimes-windows-x64.zip
+          ls -l "dist/$EXE"
 
       - uses: actions/upload-artifact@v7
         with:
           name: MyReisinLapTimes-windows-x64
-          path: dist/MyReisinLapTimes-windows-x64.zip
+          path: dist/${{ env.EXE }}
           if-no-files-found: error
 
   release:
@@ -119,7 +116,7 @@ jobs:
       GH_REPO: ${{ github.repository }}
       VERSION: ${{ inputs.version }}
       RELEASE_SHA: ${{ github.sha }}
-      PACKAGES: MyReisinLapTimes-windows-x64.zip
+      PACKAGES: MyReisinLapTimes-windows-x64.exe
     steps:
       - name: Validate version and check tag
         run: |

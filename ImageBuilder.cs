@@ -1,14 +1,12 @@
 ﻿using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
-using System.Reflection;
 
 namespace MyReisinLapTimes
 {
     internal static class ImageBuilder
     {
-        public static readonly string AssemblyLocation = Assembly.GetExecutingAssembly().Location ?? "";
-        public static readonly string CurrentDirectory = Path.GetDirectoryName(AssemblyLocation) ?? "";
+        public static readonly string CurrentDirectory = AppContext.BaseDirectory;
         public static readonly string AssetsDirectory = Path.Combine(CurrentDirectory, "assets") ?? "";
 
         public static readonly string[] ImagesPath = {

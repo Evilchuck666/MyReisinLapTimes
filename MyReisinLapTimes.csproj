@@ -12,6 +12,9 @@
 
   <ItemGroup>
     <Content Include="myreisin.ico" />
+    <!-- Backgrounds and font for the Top 10 export. ImageBuilder reads them
+         from assets/ next to the executable (bundled in single-file builds). -->
+    <Content Include="assets\**" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

@@ -24,10 +24,10 @@ Top 10 image, ready to share.
 
 ## 🚀 Getting started
 
-1. Download `MyReisinLapTimes-windows-x64.zip` from the
+1. Download `MyReisinLapTimes-windows-x64.exe` from the
    [latest release](https://github.com/Evilchuck666/MyReisinLapTimes/releases/latest).
-2. Extract it anywhere and open **MyReisinLapTimes.exe**. The package is
-   self-contained, so you do not need to install .NET.
+2. Run it from anywhere. It is a single self-contained file, so you do not
+   need to install .NET.
 3. Type the car's name and its lap time, pick the tires, press **Add Image** to
    choose a photo and press **New Time**.
 4. Use the **Export Top 10** buttons to create the ranking images.
@@ -45,11 +45,10 @@ Back up `data.json` to keep your times.
 
 ## 🖼️ Export assets
 
-The exporter draws on top of the background images found in an `assets`
-folder next to the executable:
+The exporter draws on top of the background images in the repository's
+`assets` folder:
 
 ```
-MyReisinLapTimes.exe
 assets/
 ├── Top10.png
 ├── Top10Street.png
@@ -57,9 +56,11 @@ assets/
 └── Racing.otf
 ```
 
-The release package already includes the three backgrounds. `Racing.otf` is
-the font used for titles, names and times. If it is missing, export shows a
-warning instead of creating the image.
+Every file in `assets/` is copied next to the executable when building, and
+bundled inside the single-file `.exe` of the releases (it is extracted to a
+temporary folder on first run). `Racing.otf` is the font used for titles,
+names and times. If it is missing, export shows a warning instead of creating
+the image.
 
 ## 🛠️ Building from source
 
@@ -72,14 +73,16 @@ cd MyReisinLapTimes
 dotnet run
 ```
 
-To create the same self-contained package as the release:
+To create the same single-file executable as the release:
 
 ```powershell
-dotnet publish -c Release -r win-x64 --self-contained true -o dist/MyReisinLapTimes
+dotnet publish -c Release -r win-x64 --self-contained true `
+  -p:PublishSingleFile=true `
+  -p:IncludeAllContentForSelfExtract=true `
+  -p:EnableCompressionInSingleFile=true `
+  -p:DebugType=none `
+  -o dist/publish
 ```
-
-Then copy the three `Top10*.png` files and `Racing.otf` into
-`dist/MyReisinLapTimes/assets`.
 
 ## 📦 Releases
 
@@ -87,9 +90,9 @@ Releases are built by GitHub Actions (`.github/workflows/build.yml`) on a
 Windows runner:
 
 - **Actions → Build Windows app → Run workflow** with an empty version only
-  builds the package and uploads it as a workflow artifact.
+  builds the `.exe` and uploads it as a workflow artifact.
 - The same with a version such as `1.0.0` also creates the `v1.0.0` tag and a
-  GitHub release with the zip and a `SHA256SUMS.txt` file. Releases are only
+  GitHub release with the `.exe` and a `SHA256SUMS.txt` file. Releases are only
   published from `master`.
 - Pushes and pull requests build automatically only when the repository
   variable `MYREISIN_CI` is set to `true`.
@@ -104,3 +107,4 @@ Windows runner:
 | `Helper.cs` | Sorting, validation, list loading and JSON save/load. |
 | `ImageBuilder.cs` | Draws the Top 10 PNG images. |
 | `TimeSpanComparer.cs` | Orders times from fastest to slowest. |
+| `assets/` | Backgrounds and font for the Top 10 export. |
