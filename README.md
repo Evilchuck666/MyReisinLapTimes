@@ -1,5 +1,10 @@
 # 🏁 MyReisinLapTimes
 
+![Platform](https://img.shields.io/badge/platform-Windows%20x64-blue)
+[![License](https://img.shields.io/badge/license-GPLv3-green)](LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/Evilchuck666/MyReisinLapTimes?label=download&sort=semver)](https://github.com/Evilchuck666/MyReisinLapTimes/releases/latest)
+[![Build and tests](https://github.com/Evilchuck666/MyReisinLapTimes/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/Evilchuck666/MyReisinLapTimes/actions/workflows/build.yml)
+
 **Keep your car lap times, rank them and export shareable Top 10 images.**
 
 MyReisinLapTimes is a small Windows desktop app for logging lap times of
