@@ -24,8 +24,8 @@ Top 10 image, ready to share.
 
 ## 🚀 Getting started
 
-1. Download `MyReisinLapTimes-windows-x64.exe` from the
-   [latest release](https://github.com/Evilchuck666/MyReisinLapTimes/releases/latest).
+1. Download **[MyReisinLapTimes-windows-x64.exe](https://github.com/Evilchuck666/MyReisinLapTimes/releases/latest/download/MyReisinLapTimes-windows-x64.exe)**
+   from the [latest release](https://github.com/Evilchuck666/MyReisinLapTimes/releases/latest).
 2. Run it from anywhere. It is a single self-contained file, so you do not
    need to install .NET.
 3. Type the car's name and its lap time, pick the tires, press **Add Image** to
