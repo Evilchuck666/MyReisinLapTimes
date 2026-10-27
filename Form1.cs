@@ -62,7 +62,7 @@ namespace MyReisinLapTimes
 
                 LstCarTimes.Items.Add(item);
 
-                Car newCar = new(TxtCar.Text, TxtTime.Text, tireType, ImgCar.Image);
+                Car newCar = new(TxtCar.Text, TxtTime.Text, tireType, ImgCar.Image!); // ValidateForm rejects a missing image
                 Cars.Add(newCar);
 
                 TopStreet = Helper.OrderList(Cars, "Street") ?? new List<Car>();
