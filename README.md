@@ -3,7 +3,7 @@
 ![Platform](https://img.shields.io/badge/platform-Windows%20x64-blue)
 [![License](https://img.shields.io/badge/license-GPLv3-green)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/Evilchuck666/MyReisinLapTimes?label=download&sort=semver)](https://github.com/Evilchuck666/MyReisinLapTimes/releases/latest)
-[![Build and tests](https://github.com/Evilchuck666/MyReisinLapTimes/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/Evilchuck666/MyReisinLapTimes/actions/workflows/build.yml)
+[![Build and tests](https://github.com/Evilchuck666/MyReisinLapTimes/actions/workflows/release.yml/badge.svg?branch=master)](https://github.com/Evilchuck666/MyReisinLapTimes/actions/workflows/release.yml)
 
 **Keep your car lap times, rank them and export shareable Top 10 images.**
 
@@ -96,7 +96,7 @@ dotnet publish -c Release -r win-x64 --self-contained true `
 
 ## 📦 Releases
 
-Releases are built by GitHub Actions (`.github/workflows/build.yml`) on a
+Releases are built by GitHub Actions (`.github/workflows/release.yml`) on a
 Windows runner:
 
 - **Actions → Build Windows app → Run workflow** with an empty version only

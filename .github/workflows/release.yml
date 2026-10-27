@@ -16,7 +16,7 @@ on:
       - '*.sln'
       - '*.ico'
       - 'assets/**'
-      - '.github/workflows/build.yml'
+      - '.github/workflows/release.yml'
   pull_request:
   workflow_dispatch:
     inputs:
