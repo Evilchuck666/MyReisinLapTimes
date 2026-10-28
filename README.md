@@ -4,7 +4,7 @@
 ![.NET](https://img.shields.io/badge/.NET-10-blue)
 [![License](https://img.shields.io/badge/license-GPLv3-green)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/Evilchuck666/MyReisinLapTimes?label=download&sort=semver)](https://github.com/Evilchuck666/MyReisinLapTimes/releases/latest)
-[![Build and tests](https://github.com/Evilchuck666/MyReisinLapTimes/actions/workflows/release.yml/badge.svg?branch=master)](https://github.com/Evilchuck666/MyReisinLapTimes/actions/workflows/release.yml)
+[![Build and tests](https://github.com/Evilchuck666/MyReisinLapTimes/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/Evilchuck666/MyReisinLapTimes/actions/workflows/release.yml)
 
 **Keep your car lap times, rank them and export shareable Top 10 images.**
 
@@ -104,7 +104,7 @@ Windows runner:
   builds the `.exe` and uploads it as a workflow artifact.
 - The same with a version such as `1.0.0` also creates the `v1.0.0` tag and a
   GitHub release with the `.exe` and a `SHA256SUMS.txt` file. Releases are only
-  published from `master`.
+  published from `main`.
 - Pushes and pull requests build automatically only when the repository
   variable `MYREISIN_CI` is set to `true`.
 
