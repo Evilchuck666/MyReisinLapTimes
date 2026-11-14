@@ -15,6 +15,8 @@ of tires it ran on, and the app keeps three live leaderboards: overall, street
 tires and race tires. Each leaderboard can be exported as a poster-style
 Top 10 image, ready to share.
 
+![MyReisinLapTimes main window](site/screenshots/windows-app.png)
+
 ## ✨ What it does
 
 - Add a lap time with the car's name, its time (`h:mm:ss.fff`), the tire type
