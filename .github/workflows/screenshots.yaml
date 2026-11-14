@@ -1,0 +1,37 @@
+name: Capture Windows application
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/screenshots.yaml'
+      - '.github/scripts/capture-screenshot.ps1'
+
+permissions:
+  contents: read
+
+# The JavaScript actions below run on Node 24.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+jobs:
+  capture:
+    runs-on: windows-2025
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Capture actual WinForms controls with sample data
+        shell: pwsh
+        run: ./.github/scripts/capture-screenshot.ps1
+      - uses: actions/upload-artifact@v7
+        with:
+          name: MyReisinLapTimes-screenshots
+          path: ${{ runner.temp }}/myreisin-capture-output/
+          if-no-files-found: error
+          retention-days: 14
