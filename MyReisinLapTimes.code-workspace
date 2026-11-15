@@ -5,95 +5,16 @@
       "path": "."
     }
   ],
-  // Windows Forms on .NET 10: the app only runs on Windows. On GNU/Linux or macOS the build task still compiles it
-  // (EnableWindowsTargeting) as a check. The form designer only exists in Visual Studio: in this editor,
-  // Form1.Designer.cs is edited by hand.
+  // The project is always opened through this file, which makes it a workspace: VS Code then applies only the
+  // resource-scoped settings of .vscode/settings.json and ignores its window-scoped ones. Each setting lives in exactly
+  // one place, chosen by its scope: window-scoped ones here, the rest in .vscode/settings.json. Tasks, the debug
+  // configuration and the extension recommendations live only in .vscode/ (tasks.json, launch.json, extensions.json):
+  // VS Code adds them to the "tasks", "launch" and "extensions" sections of this file, so this file has none of those.
+  //
+  // Windows Forms on .NET 10: the app only runs on Windows, but the build task also compiles it on GNU/Linux and macOS
+  // as a check. The form designer only exists in Visual Studio: in this editor, Form1.Designer.cs is edited by hand.
   "settings": {
-    "dotnet.defaultSolution": "MyReisinLapTimes.sln",
-    "files.exclude": {
-      "**/bin": true,
-      "**/obj": true
-    },
-    "search.exclude": {
-      "**/bin": true,
-      "**/obj": true,
-      "dist": true
-    },
-    "files.watcherExclude": {
-      "**/bin/**": true,
-      "**/obj/**": true,
-      "**/dist/**": true
-    }
-  },
-  "extensions": {
-    "recommendations": [
-      "ms-dotnettools.csharp",
-      "github.vscode-github-actions"
-    ]
-  },
-  "launch": {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        // Windows only. The app reads and writes %LOCALAPPDATA%\MyReisin\data.json, so a debug session works on the
-        // same lap times as the installed app: back that file up before trying destructive changes.
-        "name": "MyReisinLapTimes: debug (Windows)",
-        "type": "coreclr",
-        "request": "launch",
-        "program": "${workspaceFolder:MyReisinLapTimes}/bin/Debug/net10.0-windows/MyReisinLapTimes.dll",
-        "cwd": "${workspaceFolder:MyReisinLapTimes}",
-        "console": "internalConsole",
-        "stopAtEntry": false,
-        "preLaunchTask": "MyReisinLapTimes: build"
-      }
-    ]
-  },
-  "tasks": {
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "MyReisinLapTimes: build",
-        "type": "process",
-        "command": "dotnet",
-        "args": ["build", "MyReisinLapTimes.csproj", "-p:EnableWindowsTargeting=true"],
-        "options": {
-          "cwd": "${workspaceFolder:MyReisinLapTimes}"
-        },
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        },
-        "problemMatcher": "$msCompile"
-      },
-      {
-        // Same single-file executable as the release workflow, in dist/publish. Build it on Windows: elsewhere the SDK
-        // can't set the icon on the .exe.
-        "label": "MyReisinLapTimes: publish single-file .exe (win-x64)",
-        "type": "process",
-        "command": "dotnet",
-        "args": [
-          "publish",
-          "MyReisinLapTimes.csproj",
-          "-c",
-          "Release",
-          "-r",
-          "win-x64",
-          "--self-contained",
-          "true",
-          "-p:PublishSingleFile=true",
-          "-p:IncludeAllContentForSelfExtract=true",
-          "-p:EnableCompressionInSingleFile=true",
-          "-p:DebugType=none",
-          "-p:EnableWindowsTargeting=true",
-          "-o",
-          "dist/publish"
-        ],
-        "options": {
-          "cwd": "${workspaceFolder:MyReisinLapTimes}"
-        },
-        "group": "build",
-        "problemMatcher": "$msCompile"
-      }
-    ]
+    // The C# extension loads this solution. Window-scoped: it would be ignored in .vscode/settings.json.
+    "dotnet.defaultSolution": "MyReisinLapTimes.sln"
   }
 }

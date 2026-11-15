@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    // C# language support and the coreclr debugger (netcoredbg) that launch.json uses, published on Open VSX.
+    // Microsoft's VS Code uses ms-dotnettools.csharp instead (it is not on Open VSX); it provides the same coreclr
+    // debug type, so launch.json works with either. Don't install both.
+    "muhammad-sammy.csharp",
+    // The workflows in .github/workflows.
+    "github.vscode-github-actions"
+  ]
+}

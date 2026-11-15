@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // Windows only: elsewhere the build works but Windows Forms can't start. The app reads and writes
+      // %LOCALAPPDATA%\MyReisin\data.json (and exports the Top 10 images there), the same file as the installed app:
+      // back it up before trying destructive changes.
+      "name": "MyReisinLapTimes (Windows)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "Build",
+      "program": "${workspaceFolder}/bin/Debug/net10.0-windows/MyReisinLapTimes.dll",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

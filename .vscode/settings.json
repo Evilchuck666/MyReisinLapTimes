@@ -1,0 +1,15 @@
+{
+  // Resource-scoped settings only: window-scoped ones go in MyReisinLapTimes.code-workspace, which explains the split.
+
+  // dotnet build output. Search already skips it because it is in .gitignore.
+  "files.exclude": {
+    "bin": true,
+    "obj": true
+  },
+  // Rewritten on every build or publish (dist/ holds the output of the publish task): no need to watch them.
+  "files.watcherExclude": {
+    "bin/**": true,
+    "obj/**": true,
+    "dist/**": true
+  }
+}

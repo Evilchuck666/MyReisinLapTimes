@@ -1,0 +1,52 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build",
+      "detail": "Debug build in bin/Debug/net10.0-windows; on GNU/Linux and macOS it only checks that the code compiles",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "MyReisinLapTimes.csproj",
+        "-p:EnableWindowsTargeting=true",
+        "-p:GenerateFullPaths=true",
+        "-consoleLoggerParameters:NoSummary;ForceNoAlign"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      // Same command as .github/workflows/release.yaml. Run it on Windows: elsewhere the SDK can't set the icon and
+      // version resources on the .exe.
+      "label": "Publish single-file .exe",
+      "detail": "Self-contained win-x64 MyReisinLapTimes.exe with assets/ bundled, in dist/publish",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "publish",
+        "MyReisinLapTimes.csproj",
+        "-c",
+        "Release",
+        "-r",
+        "win-x64",
+        "--self-contained",
+        "true",
+        "-p:PublishSingleFile=true",
+        "-p:IncludeAllContentForSelfExtract=true",
+        "-p:EnableCompressionInSingleFile=true",
+        "-p:DebugType=none",
+        "-p:EnableWindowsTargeting=true",
+        "-p:GenerateFullPaths=true",
+        "-consoleLoggerParameters:NoSummary;ForceNoAlign",
+        "-o",
+        "dist/publish"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}
