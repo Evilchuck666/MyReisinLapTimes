@@ -41,7 +41,8 @@ jobs:
           test -s site/styles.css
           test -f site/.nojekyll
           test -s site/screenshots/windows-app.png
-          test "$(find site -type f | wc -l)" -eq 4
+          test -s site/favicon.svg
+          test "$(find site -type f | wc -l)" -eq 5
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:
